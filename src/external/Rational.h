@@ -9,7 +9,12 @@
 #ifndef TRIWILD_RATIONAL_H
 #define TRIWILD_RATIONAL_H
 
+#ifdef FLOAT_TETWILD_USE_MINI_GMP
+#include "mini-gmp.h"
+#include "mini-mpq.h"
+#else
 #include <gmp.h>
+#endif
 #include <iostream>
 
 namespace triwild {

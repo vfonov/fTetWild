@@ -53,6 +53,8 @@ endif()
 option(FLOAT_TETWILD_ENABLE_TBB         "Enable TBB"                    ON)
 option(FLOAT_TETWILD_USE_FLOAT          "Use floats instead of double"  OFF)
 option(FLOAT_TETWILD_WITH_SANITIZERS    "Use sanitizers"                OFF)
+option(FLOAT_TETWILD_MINI_GMP           "Use mini-gmp instead of gmp"   OFF)
+
 
 # Sanitizer options
 option(SANITIZE_ADDRESS   "Sanitize Address"       OFF)
@@ -85,9 +87,11 @@ include(FloatTetwildDependencies)
 # FloatTetwild library
 ################################################################################
 
+IF(NOT FLOAT_TETWILD_MINI_GMP)
 find_package(GMPfTetWild)
 IF(NOT ${GMP_FOUND})
 	MESSAGE(FATAL_ERROR "Cannot find GMP")
+ENDIF()
 ENDIF()
 
 # find_package(MPFR)
@@ -126,7 +130,12 @@ if(FLOAT_TETWILD_USE_FLOAT)
 	target_compile_definitions(${PROJECT_NAME} PUBLIC -DFLOAT_TETWILD_USE_FLOAT)
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${GMP_INCLUDE_DIRS})
+IF(NOT FLOAT_TETWILD_MINI_GMP)
+	target_include_directories(${PROJECT_NAME} PUBLIC ${GMP_INCLUDE_DIRS})
+ELSE()
+	# try using mini-gmp instead	
+	target_compile_definitions(${PROJECT_NAME} PUBLIC -DFLOAT_TETWILD_USE_MINI_GMP)
+ENDIF()
 
 target_link_libraries(${PROJECT_NAME}
 	PUBLIC
@@ -136,9 +145,16 @@ target_link_libraries(${PROJECT_NAME}
 		Threads::Threads
 		fast_winding_number
 		json
-		${GMP_LIBRARIES}
+		# ${GMP_LIBRARIES}
 		# ${MPFR_LIBRARIES}
 )
+IF(NOT FLOAT_TETWILD_MINI_GMP)
+target_link_libraries(${PROJECT_NAME}
+	PUBLIC
+		${GMP_LIBRARIES}
+)
+ENDIF()
+
 if(FLOAT_TETWILD_ENABLE_TBB)
 	target_link_libraries(${PROJECT_NAME} PUBLIC tbb::tbb)
 	target_compile_definitions(${PROJECT_NAME} PUBLIC FLOAT_TETWILD_USE_TBB)

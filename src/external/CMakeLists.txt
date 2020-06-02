@@ -25,6 +25,9 @@ set(SOURCES
 
 	Rational.h
 )
+IF(FLOAT_TETWILD_MINI_GMP)
+	SET(SOURCES ${SOURCES} mini-mpq.c mini-mpq.h mini-gmp.c mini-gmp.h)
+ENDIF()
 
 prepend_current_path(SOURCES)
 float_tetwild_copy_headers(${SOURCES})
