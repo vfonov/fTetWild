@@ -63,7 +63,7 @@ class Parameters
     Vector3 bbox_min;
     Vector3 bbox_max;
     Scalar  bbox_diag_length;
-    Scalar  ideal_edge_length;
+    Scalar  ideal_edge_length=-1.0;
     Scalar  ideal_edge_length_2;
     Scalar  eps_input;
     Scalar  eps;
@@ -93,12 +93,16 @@ class Parameters
 
         bbox_diag_length = bbox_diag_l;
 
-        ideal_edge_length   = bbox_diag_length * ideal_edge_length_rel;
+        if(ideal_edge_length<0.0) {
+            ideal_edge_length   = bbox_diag_length * ideal_edge_length_rel;
+        } else {
+            ideal_edge_length_rel = ideal_edge_length/bbox_diag_length;
+        }
         ideal_edge_length_2 = ideal_edge_length * ideal_edge_length;
 
         eps_input = bbox_diag_length * eps_rel;
         dd        = eps_input;// / stage;
-	dd /= 1.5;
+	    dd /= 1.5;
         double eps_usable = eps_input - dd / std::sqrt(3);
         eps_delta = eps_usable * 0.1;
         eps = eps_usable - eps_delta * (stage - 1);
