@@ -10,7 +10,7 @@ include(FloatTetwildDownloadExternal)
 ################################################################################
 
 # Sanitizers
-if(FLOAT_TETWILD_WITH_SANITIZERS)
+if(FLOAT_TETWILD_TOPLEVEL_PROJECT AND FLOAT_TETWILD_WITH_SANITIZERS)
 	float_tetwild_download_sanitizers()
 	find_package(Sanitizers)
 endif()

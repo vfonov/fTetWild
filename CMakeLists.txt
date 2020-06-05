@@ -20,7 +20,9 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 # Color output
+IF(FLOAT_TETWILD_TOPLEVEL_PROJECT)
 include(UseColors)
+ENDIF()
 
 # Prepend function
 include(PrependCurrentPath)
@@ -56,13 +58,16 @@ option(FLOAT_TETWILD_WITH_SANITIZERS    "Use sanitizers"                OFF)
 option(FLOAT_TETWILD_MINI_GMP           "Use mini-gmp instead of gmp"   OFF)
 
 
+
+# Options for libigl modules
+IF(FLOAT_TETWILD_TOPLEVEL_PROJECT)
+
 # Sanitizer options
 option(SANITIZE_ADDRESS   "Sanitize Address"       OFF)
 option(SANITIZE_MEMORY    "Sanitize Memory"        OFF)
 option(SANITIZE_THREAD    "Sanitize Thread"        OFF)
 option(SANITIZE_UNDEFINED "Sanitize Undefined"     OFF)
 
-# Options for libigl modules
 option(LIBIGL_USE_STATIC_LIBRARY          "Use libigl as static library" OFF)
 option(LIBIGL_WITH_COMISO            "Use CoMiso"                   OFF)
 option(LIBIGL_WITH_EMBREE            "Use Embree"                   OFF)
@@ -79,6 +84,8 @@ option(LIBIGL_WITH_XML               "Use XML"                      OFF)
 if(FLOAT_TETWILD_WITH_SANITIZERS)
 	list(APPEND CMAKE_MODULE_PATH ${FLOAT_TETWILD_EXTERNAL}/sanitizers-cmake/cmake)
 endif()
+
+ENDIF()
 
 # Setup dependencies
 include(FloatTetwildDependencies)
@@ -133,7 +140,7 @@ endif()
 IF(NOT FLOAT_TETWILD_MINI_GMP)
 	target_include_directories(${PROJECT_NAME} PUBLIC ${GMP_INCLUDE_DIRS})
 ELSE()
-	# try using mini-gmp instead	
+	# use bundled mini-gmp instead	
 	target_compile_definitions(${PROJECT_NAME} PUBLIC -DFLOAT_TETWILD_USE_MINI_GMP)
 ENDIF()
 
