@@ -608,11 +608,11 @@ bool floatTetWild::CutMesh::get_intersecting_edges_and_points(std::vector<Vector
 //        time_get_intersecting_edges_and_points2 += timer.getElapsedTime();
         if (!is_result) {
             //fortest
-            cout << "seg_plane_intersection no result!" << endl;
-            cout << to_plane_dists[e[0]] << ", " << to_plane_dists[e[1]] << endl;
-            cout << get_to_plane_dist(mesh.tet_vertices[v1_id].pos) << ", "
-                 << get_to_plane_dist(mesh.tet_vertices[v2_id].pos) << endl;
-            cout << "e[0] = " << e[0] << endl;
+            logger().debug("seg_plane_intersection no result!");
+            logger().debug("{},{}",to_plane_dists[e[0]], to_plane_dists[e[1]]);
+            logger().debug("{},{}",get_to_plane_dist(mesh.tet_vertices[v1_id].pos) ,
+                                   get_to_plane_dist(mesh.tet_vertices[v2_id].pos) );
+            logger().debug("e[0] = {}", e[0]);
             //fortest
             return false;
         }

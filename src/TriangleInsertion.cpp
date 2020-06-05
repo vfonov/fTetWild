@@ -629,7 +629,7 @@ bool floatTetWild::insert_one_triangle(int insert_f_id, const std::vector<Vector
             if(is_uninserted_face_covered(insert_f_id, input_vertices, input_faces, cut_t_ids, mesh))
                 return true;
         }
-        cout<<"FAIL get_intersecting_edges_and_points"<<endl;
+        logger().debug("FAIL get_intersecting_edges_and_points");
         return false;
     }
 //    time_get_intersecting_edges_and_points += timer.getElapsedTime();
@@ -657,7 +657,7 @@ bool floatTetWild::insert_one_triangle(int insert_f_id, const std::vector<Vector
             if(is_uninserted_face_covered(insert_f_id, input_vertices, input_faces, cut_t_ids, mesh))
                 return true;
         }
-        cout<<"FAIL subdivide_tets"<<endl;
+        logger().debug("FAIL subdivide_tets");
         return false;
     }
 //    time_subdivide_tets += timer.getElapsedTime();
@@ -1364,7 +1364,7 @@ bool floatTetWild::subdivide_tets(int insert_f_id, Mesh& mesh, CutMesh& cut_mesh
 //                    cout << "cnt_on = " << cnt_on << endl;//fortest
                     //fortest
                     if(cnt_on == 4){
-                        cout<<"cnt_on==4!!"<<endl;
+                        logger().debug("cnt_on==4!!");
                     }
                     //fortest
 
@@ -1809,8 +1809,8 @@ void floatTetWild::find_boundary_edges(const std::vector<Vector3> &input_vertice
         }
     }
 
-    cout << "#boundary_e1 = " << cnt1 << endl;
-    cout << "#boundary_e2 = " << cnt2 << endl;
+    floatTetWild::logger().debug("#boundary_e1 = {}", cnt1);
+    floatTetWild::logger().debug("#boundary_e2 = {}", cnt2);
 }
 //double time_e1 = 0;
 //double time_e2 = 0;
@@ -1949,7 +1949,7 @@ bool floatTetWild::insert_boundary_edges(const std::vector<Vector3> &input_verti
         }
         time2+=timer.getElapsedTime();
         if (n_f_ids.empty()) {
-            cout << "FAIL n_f_ids.empty()" << endl;
+            floatTetWild::logger().debug("FAIL n_f_ids.empty()");
             continue;
         }
 
@@ -2022,12 +2022,12 @@ bool floatTetWild::insert_boundary_edges(const std::vector<Vector3> &input_verti
                     mark_known_surface_fs(f, KNOWN_NOT_SURFACE);
                 }
                 known_not_surface_fs.insert(known_not_surface_fs.end(), cut_fs.begin(), cut_fs.end());
-                cout << "FAIL subdivide_tets" << endl;
+                logger().debug("FAIL subdivide_tets");
             } else {
                 for (auto &f: cut_fs)
                     mark_known_surface_fs(f, KNOWN_SURFACE);
                 known_surface_fs.insert(known_surface_fs.end(), cut_fs.begin(), cut_fs.end());
-                cout << "SEMI-FAIL subdivide_tets" << endl;
+                logger().debug("SEMI-FAIL subdivide_tets");
             }
 
             is_all_inserted = false;//unless now
@@ -2731,8 +2731,9 @@ void floatTetWild::mark_surface_fs(const std::vector<Vector3> &input_vertices, c
         }
     }
 
-    cout<<"known_surface_fs.size = "<<known_surface_fs.size()<<endl;
-    cout<<"known_not_surface_fs.size = "<<known_not_surface_fs.size()<<endl;
+    logger().info("known_surface_fs.size = {}",known_surface_fs.size());
+    logger().info("known_not_surface_fs.size = {}", known_not_surface_fs.size());
+    
     if(known_surface_fs.empty() && known_not_surface_fs.empty())
         return;
 

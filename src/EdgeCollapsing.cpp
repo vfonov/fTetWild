@@ -10,6 +10,7 @@
 #include <floattetwild/LocalOperations.h>
 
 #include <floattetwild/MeshImprovement.h> //todo: tmp
+#include <floattetwild/Logger.hpp>
 
 
 #ifdef FLOAT_TETWILD_USE_TBB
@@ -150,8 +151,8 @@ void edge_collapsing_aux(Mesh& mesh, const AABBWrapper& tree, std::vector<std::a
             counter++;
         }
 
-        cout << "success(env) = " << suc_counter_env << endl;
-        cout << "success = " << suc_counter << "(" << counter << ")" << endl;
+        logger().debug("success(env) = " , suc_counter_env );
+        logger().debug("success = {} ({})", suc_counter , counter);
 
 #if EC_POSTPROCESS
         if (suc_counter == 0)

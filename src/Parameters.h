@@ -10,6 +10,7 @@
 
 // To set the parameters related
 #include <floattetwild/Types.hpp>
+#include <floattetwild/Logger.hpp>
 
 #include <array>
 #include <vector>
@@ -45,6 +46,7 @@ class Parameters
     Scalar box_scale = 1 / 15.0;
 
     // epsilon presents the tolerence permited (in % of the box diagonal)
+    // i.e minimal size of details
     Scalar eps_rel = 1e-3;
 
     // initial target edge length at every vertex(in % of the box diagonal)
@@ -52,6 +54,7 @@ class Parameters
     Scalar min_edge_len_rel      = -1;
 
     int    max_its     = 80;
+    // optimization stopping criterium: 3 : +inf
     Scalar stop_energy = 10;
 
     int stage = 2;
@@ -132,18 +135,18 @@ class Parameters
         collapse_threshold   = ideal_edge_length * (4 / 5.0);
         split_threshold_2    = split_threshold * split_threshold;
         collapse_threshold_2 = collapse_threshold * collapse_threshold;
+        
+        logger().info("bbox_diag_length = {}", bbox_diag_length);
+        logger().info("ideal_edge_length = {}", ideal_edge_length);
 
-        std::cout << "bbox_diag_length = " << bbox_diag_length << std::endl;
-        std::cout << "ideal_edge_length = " << ideal_edge_length << std::endl;
+        logger().info("stage = {}", stage);
+        logger().info("eps_input = {}", eps_input);
+        logger().info("eps = {}", eps);
+        logger().info("eps_simplification = {}", eps_simplification);
+        logger().info("eps_coplanar = {}", eps_coplanar);
 
-        std::cout << "stage = " << stage << std::endl;
-        std::cout << "eps_input = " << eps_input << std::endl;
-        std::cout << "eps = " << eps << std::endl;
-        std::cout << "eps_simplification = " << eps_simplification << std::endl;
-        std::cout << "eps_coplanar = " << eps_coplanar << std::endl;
-
-        std::cout << "dd = " << dd << std::endl;
-        std::cout << "dd_simplification = " << dd_simplification << std::endl;
+        logger().info("dd = {}", dd);
+        logger().info("dd_simplification = {}", dd_simplification);
 
         return true;
     }

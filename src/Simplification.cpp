@@ -9,6 +9,7 @@
 #include <floattetwild/Simplification.h>
 #include <floattetwild/Logger.hpp>
 #include <floattetwild/LocalOperations.h>
+#include <floattetwild/Logger.hpp>
 
 #include <igl/remove_duplicate_vertices.h>
 #include <igl/writeOFF.h>
@@ -42,11 +43,12 @@ void floatTetWild::simplify(std::vector<Vector3>& input_vertices, std::vector<Ve
     igl::Timer timer;
     timer.start();
     collapsing(input_vertices, input_faces, tree, params, v_is_removed, f_is_removed, conn_fs);
-    std::cout<<"collapsing "<<timer.getElapsedTime()<<std::endl;
+    logger().info("collapsing {}",timer.getElapsedTime());
+
 
     timer.start();
     swapping(input_vertices, input_faces, tree, params, v_is_removed, f_is_removed, conn_fs);
-    std::cout<<"swapping "<<timer.getElapsedTime()<<std::endl;
+    logger().info("swapping {}",timer.getElapsedTime());
 
     //clean up vs, fs
     //v

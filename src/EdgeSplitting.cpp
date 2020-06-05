@@ -10,6 +10,7 @@
 #include <floattetwild/LocalOperations.h>
 
 #include <floattetwild/MeshImprovement.h>
+#include <floattetwild/Logger.hpp>
 
 #define TET_MODIFIED 100
 
@@ -102,8 +103,7 @@ void floatTetWild::edge_splitting(Mesh& mesh, const AABBWrapper& tree) {
             t.scalar = 0;
         }
     }
-
-    cout<<"success = "<<suc_counter<<"("<<counter<<")"<<endl;
+    logger().debug("success = {} ({})",suc_counter,counter);
 }
 
 bool floatTetWild::split_an_edge(Mesh& mesh, int v1_id, int v2_id, bool is_repush,
