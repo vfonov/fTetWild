@@ -21,7 +21,7 @@ namespace floatTetWild {
         //// initialization
         inline Scalar get_sf_diag() const { return GEO::bbox_diagonal(sf_mesh); }
 
-        AABBWrapper(const GEO::Mesh &sf_mesh) : sf_mesh(sf_mesh), sf_tree(sf_mesh) {}
+        AABBWrapper(const GEO::Mesh &_sf_mesh) : sf_mesh(_sf_mesh), sf_tree(_sf_mesh) {}
 
         void init_b_mesh_and_tree(const std::vector<Vector3> &input_vertices, const std::vector<Vector3i> &input_faces, Mesh &mesh);
 

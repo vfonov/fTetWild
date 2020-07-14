@@ -782,9 +782,9 @@ void floatTetWild::sample_triangle(const std::array<Vector3, 3>& vs, std::vector
     if (N > 1) {
         if (N == int(N))
             N -= 1;
-        GEO::vec3 n_v1v2 = GEO::normalize(v2 - v1);
+        GEO::vec3 n_v1v2_ = GEO::normalize(v2 - v1);
         for (int n = 1; n <= N; n++) {
-            ps.push_back(v1 + n_v1v2 * sampling_dist * n);
+            ps.push_back(v1 + n_v1v2_ * sampling_dist * n);
         }
     }
 
@@ -792,9 +792,9 @@ void floatTetWild::sample_triangle(const std::array<Vector3, 3>& vs, std::vector
     if (N > 1) {
         if (N == int(N))
             N -= 1;
-        GEO::vec3 n_v2v0 = GEO::normalize(v0 - v2);
+        GEO::vec3 n_v2v0_ = GEO::normalize(v0 - v2);
         for (int n = 1; n <= N; n++) {
-            ps.push_back(v2 + n_v2v0 * sampling_dist * n);
+            ps.push_back(v2 + n_v2v0_ * sampling_dist * n);
         }
     }
 }
@@ -921,7 +921,7 @@ void floatTetWild::get_new_tet_slots(Mesh& mesh, int n, std::vector<int>& new_co
         }
     }
     if (cnt < n) {
-        for (int i = 0; i < n - cnt; i++)
+        for (int i = 0; i < (n - cnt); i++)
             new_conn_tets.push_back(mesh.tets.size() + i);
         mesh.tets.resize(mesh.tets.size() + n - cnt);
         mesh.t_empty_start = mesh.tets.size();
@@ -1045,7 +1045,7 @@ bool floatTetWild::is_energy_unstable(const std::array<Scalar, 12>& T, Scalar re
                                                           {{3, 1, 2, 0}},
                                                           {{3, 2, 0, 1}},
                                                           {{3, 2, 1, 0}}};
-    Scalar res0;
+    Scalar res0 = 0;
     if (std::isinf(res))
         return true;
 

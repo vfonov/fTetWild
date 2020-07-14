@@ -113,8 +113,8 @@ bool floatTetWild::CutMesh::snap_to_plane() {
             continue;
         }
         to_plane_dists[lv_id] = get_to_plane_dist(mesh.tet_vertices[v_id].pos);
-        if (ori == Predicates::ORI_POSITIVE && to_plane_dists[lv_id] > 0
-            || ori == Predicates::ORI_NEGATIVE && to_plane_dists[lv_id] < 0){
+        if (   ((ori == Predicates::ORI_POSITIVE) && (to_plane_dists[lv_id] > 0))
+            || ((ori == Predicates::ORI_NEGATIVE) && (to_plane_dists[lv_id] < 0)) ){
 //            cout<<"reverted!!! "<<to_plane_dists[lv_id]<<endl;
             to_plane_dists[lv_id] = -to_plane_dists[lv_id];
         }
@@ -407,7 +407,7 @@ void floatTetWild::CutMesh::expand_new(std::vector<int> &cut_t_ids) {
 
                 ///
                 tets.emplace_back();
-                auto &t = tets.back();
+                auto &ti = tets.back();
                 for (int j = 0; j < 4; j++) {
                     int new_gv_id = mesh.tets[gt_id][j];
                     int new_lv_id;
@@ -435,7 +435,7 @@ void floatTetWild::CutMesh::expand_new(std::vector<int> &cut_t_ids) {
                         is_projected.push_back(false);
                     } else
                         new_lv_id = map_v_ids[new_gv_id];
-                    t[j] = new_lv_id;
+                    ti[j] = new_lv_id;
                 }
             }
             if (is_in)
@@ -546,8 +546,8 @@ void floatTetWild::CutMesh::revert_totally_snapped_tets(int a, int b) {
         const auto &t = tets[i];
         if (is_v_on_plane(t[0]) && is_v_on_plane(t[1]) && is_v_on_plane(t[2]) && is_v_on_plane(t[3])) {
             auto tmp_t = t;
-            std::sort(tmp_t.begin(), tmp_t.end(), [&](int a, int b) {
-                return fabs(to_plane_dists[a]) > fabs(to_plane_dists[b]);
+            std::sort(tmp_t.begin(), tmp_t.end(), [this](int a_, int b_) {
+                return fabs(this->to_plane_dists[a_]) > fabs(this->to_plane_dists[b_]);
             });
             for (int j = 0; j < 3; j++) {
                 if (is_snapped[tmp_t[j]] == true) {

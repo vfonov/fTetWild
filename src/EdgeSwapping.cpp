@@ -117,8 +117,8 @@ bool floatTetWild::remove_an_edge_32(Mesh& mesh, int v1_id, int v2_id, const std
             v_ids[cnt++] = tets[old_t_ids[0]][i];
         }
     }
-    int i = tets[old_t_ids[1]].find(v_ids[0]);
-    if(i>=0){
+    int j = tets[old_t_ids[1]].find(v_ids[0]);
+    if(j>=0){
         new_tets.push_back(tets[old_t_ids[1]]);
         new_tets.push_back(tets[old_t_ids[2]]);
         t_ids = {{old_t_ids[1], old_t_ids[2]}};
@@ -127,10 +127,10 @@ bool floatTetWild::remove_an_edge_32(Mesh& mesh, int v1_id, int v2_id, const std
         new_tets.push_back(tets[old_t_ids[1]]);
         t_ids = {{old_t_ids[2], old_t_ids[1]}};
     }
-    i = new_tets[0].find(v1_id);
-    new_tets[0][i] = v_ids[1];
-    i = new_tets[1].find(v2_id);
-    new_tets[1][i] = v_ids[0];
+    j = new_tets[0].find(v1_id);
+    new_tets[0][j] = v_ids[1];
+    j = new_tets[1].find(v2_id);
+    new_tets[1][j] = v_ids[0];
 
     ////check
     for(auto& t:new_tets) {
