@@ -163,6 +163,8 @@ int main(int argc, char **argv) {
 
     bool run_tet_gen = false;
     bool skip_simplify = false;
+    bool nobinary = false;
+    bool nocolor = false;
 
     Mesh mesh;
     Parameters &params = mesh.params;
@@ -198,6 +200,8 @@ int main(int argc, char **argv) {
 
     command_line.add_flag("-q,--is-quiet", params.is_quiet, "Mute console output. (optional)");
     command_line.add_flag("--skip-simplify", skip_simplify, "");
+    command_line.add_flag("--no-binary", nobinary, "export meshes as ascii");
+    command_line.add_flag("--no-color", nocolor, "don't export color");
     command_line.add_flag("--not-sort-input", params.not_sort_input, "");
     command_line.add_flag("--correct-surface-orientation", params.correct_surface_orientation, "");
 
@@ -296,6 +300,8 @@ int main(int argc, char **argv) {
     GEO::Mesh sf_mesh;
     json tree_with_ids;
 
+    std::vector<std::string> meshes;
+
     if(!csg_file.empty())
     {
         json csg_tree = json({});
@@ -310,12 +316,12 @@ int main(int argc, char **argv) {
         }
 		file.close();
 
-        std::vector<std::string> meshes;
-
         CSGTreeParser::get_meshes(csg_tree, meshes, tree_with_ids);
 
         if(!CSGTreeParser::load_and_merge(meshes, input_vertices, input_faces, sf_mesh, input_tags))
             return EXIT_FAILURE;
+
+        // To disable the recent modification of using input for wn, use meshes.clear();
     }
     else{
         if (!MeshIO::load_mesh(params.input_path, input_vertices, input_faces, sf_mesh, input_tags)) {
@@ -421,7 +427,7 @@ int main(int argc, char **argv) {
     correct_tracked_surface_orientation(mesh, tree);
     logger().info("correct_tracked_surface_orientation done");
     if(!csg_file.empty())
-        boolean_operation(mesh, tree_with_ids);
+        boolean_operation(mesh, tree_with_ids, meshes);
     else if(boolean_op >= 0)
         boolean_operation(mesh, boolean_op);
     else {
@@ -462,14 +468,17 @@ int main(int argc, char **argv) {
 //        MeshIO::write_mesh(params.output_path + "_" + params.postfix + ".msh", mesh, false);
 
     //fortest
-    std::vector<Scalar> colors(mesh.tets.size(), -1);
-    for (int i = 0; i < mesh.tets.size(); i++) {
-        if (mesh.tets[i].is_removed)
-            continue;
-        colors[i] = mesh.tets[i].quality;
+    std::vector<Scalar> colors;
+    if (!nocolor) {
+        colors.resize(mesh.tets.size(), -1);
+        for (int i = 0; i < mesh.tets.size(); i++) {
+            if (mesh.tets[i].is_removed)
+                continue;
+            colors[i] = mesh.tets[i].quality;
+        }
     }
     //fortest
-    MeshIO::write_mesh(output_mesh_name, mesh, false, colors);
+    MeshIO::write_mesh(output_mesh_name, mesh, false, colors, !nobinary, !csg_file.empty());
     MeshIO::write_surface_mesh(params.output_path + "_" + params.postfix + "_sf.obj", mesh, false);
 
     std::ofstream fout(params.log_path + "_" + params.postfix + ".csv");
