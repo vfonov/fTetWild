@@ -28,6 +28,7 @@
 #include <Eigen/Dense>
 
 #include <igl/Timer.h>
+#include <igl/write_triangle_mesh.h>
 
 #ifdef LIBIGL_WITH_TETGEN
 #include <igl/copyleft/tetgen/tetrahedralize.h>
@@ -208,6 +209,7 @@ int main(int argc, char **argv) {
     command_line.add_option("--envelope-log", params.envelope_log, "");
     command_line.add_flag("--smooth-open-boundary", params.smooth_open_boundary, "");
     command_line.add_flag("--manifold-surface", params.manifold_surface, "");
+    command_line.add_flag("--coarsen", params.coarsen, "");
     command_line.add_option("--csg", csg_file, "json file containg a csg tree")->check(CLI::ExistingFile);
 
     command_line.add_flag("--use-old-energy", floatTetWild::use_old_energy, "");//tmp
@@ -446,8 +448,12 @@ int main(int argc, char **argv) {
             }
         }
     }
+    Eigen::MatrixXd V_sf;
+    Eigen::MatrixXi F_sf;
     if(params.manifold_surface){
-        manifold_surface(mesh);
+        manifold_surface(mesh, V_sf, F_sf);
+    } else {
+        get_surface(mesh, V_sf, F_sf);
     }
     stats().record(StateInfo::wn_id, timer.getElapsedTimeInSec(), mesh.get_v_num(), mesh.get_t_num(),
                    mesh.get_max_energy(), mesh.get_avg_energy());
@@ -479,7 +485,8 @@ int main(int argc, char **argv) {
     }
     //fortest
     MeshIO::write_mesh(output_mesh_name, mesh, false, colors, !nobinary, !csg_file.empty());
-    MeshIO::write_surface_mesh(params.output_path + "_" + params.postfix + "_sf.obj", mesh, false);
+    igl::write_triangle_mesh(params.output_path + "_" + params.postfix + "_sf.obj", V_sf, F_sf);
+//    MeshIO::write_surface_mesh(params.output_path + "_" + params.postfix + "_sf.obj", mesh, false);
 
     std::ofstream fout(params.log_path + "_" + params.postfix + ".csv");
     if (fout.good())
@@ -536,5 +543,7 @@ void test_manifold(std::string& file_name){
 
     Mesh mesh;
 
-    manifold_surface(mesh);
+    Eigen::MatrixXd V_sf;
+    Eigen::MatrixXi F_sf;
+    manifold_surface(mesh, V_sf, F_sf);
 }

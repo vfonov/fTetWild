@@ -35,7 +35,7 @@ class Parameters
     bool correct_surface_orientation = false;
 
     bool is_quiet  = false;
-    int  log_level = 2;
+    int  log_level = 3;//2;
 
     bool smooth_open_boundary = false;
     bool manifold_surface = false;
@@ -84,6 +84,7 @@ class Parameters
     Scalar dd_simplification;
 
     bool use_general_wn = true;
+    bool coarsen = false;
 
     bool init(Scalar bbox_diag_l)
     {
